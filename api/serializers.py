@@ -5,7 +5,12 @@ from .models import Project, Timesheet, Task
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email']
+        fields = ['id', 'username', 'email', 'password']
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user
 
 class ProjectSerializer(serializers.ModelSerializer):
     owner = UserSerializer(read_only=True)  # Datos del dueño del proyecto
